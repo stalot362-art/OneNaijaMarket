@@ -1,0 +1,117 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OneNaijaMarket</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f5f5f5; }
+    header { background: #008751; color: white; padding: 18px; text-align: center; }
+    .container { max-width: 1100px; margin: 20px auto; padding: 12px; }
+    .form-box, .listing { background: white; padding: 15px; margin-bottom: 15px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    input, textarea, select, button { width: 100%; margin-top: 10px; padding: 10px; border-radius: 6px; border: 1px solid #ccc; }
+    button { background: #008751; color: white; border: none; cursor: pointer; font-weight: bold; }
+    button:hover { background: #006b3f; }
+    .listing img { width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; margin-top: 10px; }
+    .badge { display: inline-block; background: #eee; padding: 5px 10px; border-radius: 20px; font-size: 12px; margin-top: 5px; }
+    .whatsapp-btn { background: #25D366; margin-top: 10px; }
+  </style>
+</head>
+<body><header>
+  <h1>OneNaijaMarket</h1>
+  <p>Post anything. Sell anything. Offer any service.</p>
+</header><div class="container">  <div class="form-box">
+    <h2>Post Your Listing</h2>
+    <input type="text" id="title" placeholder="What are you selling or offering?"><select id="category">
+  <option value="">Select Category</option>
+  <option>Products</option>
+  <option>Services</option>
+  <option>Tutoring</option>
+  <option>Rentals</option>
+  <option>Jobs</option>
+  <option>Other</option>
+</select>
+
+<textarea id="description" placeholder="Describe it..."></textarea>
+<input type="text" id="price" placeholder="Price (or Negotiable)">
+<input type="text" id="contact" placeholder="WhatsApp Number (e.g. 2348012345678)">
+<input type="file" id="image" accept="image/*">
+
+<button onclick="addListing()">Post Listing</button>
+
+  </div>  <div id="listings"></div></div><script>
+  let listings = JSON.parse(localStorage.getItem('oneNaijaListings')) || [];
+
+  function saveListings() {
+    localStorage.setItem('oneNaijaListings', JSON.stringify(listings));
+  }
+
+  function renderListings() {
+    const container = document.getElementById('listings');
+    container.innerHTML = '';
+
+    listings.slice().reverse().forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'listing';
+
+      div.innerHTML = `
+        <h3>${item.title}</h3>
+        <span class="badge">${item.category}</span>
+        <p>${item.description}</p>
+        <p><strong>Price:</strong> ${item.price}</p>
+        ${item.image ? `<img src="${item.image}">` : ''}
+        <a href="https://wa.me/${item.contact}" target="_blank">
+          <button class="whatsapp-btn">Contact on WhatsApp</button>
+        </a>
+      `;
+
+      container.appendChild(div);
+    });
+  }
+
+  function addListing() {
+    const title = document.getElementById('title').value;
+    const category = document.getElementById('category').value;
+    const description = document.getElementById('description').value;
+    const price = document.getElementById('price').value;
+    const contact = document.getElementById('contact').value;
+    const imageInput = document.getElementById('image');
+
+    if (!title || !description || !contact || !category) {
+      alert('Please fill all required fields');
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function () {
+      const newListing = {
+        title,
+        category,
+        description,
+        price,
+        contact,
+        image: reader.result || ''
+      };
+
+      listings.push(newListing);
+      saveListings();
+      renderListings();
+    };
+
+    if (imageInput.files[0]) {
+      reader.readAsDataURL(imageInput.files[0]);
+    } else {
+      reader.onload();
+    }
+
+    document.getElementById('title').value = '';
+    document.getElementById('category').value = '';
+    document.getElementById('description').value = '';
+    document.getElementById('price').value = '';
+    document.getElementById('contact').value = '';
+    document.getElementById('image').value = '';
+  }
+
+  renderListings();
+</script></body>
+</html>
