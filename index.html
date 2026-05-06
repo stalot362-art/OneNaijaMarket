@@ -1,10 +1,14 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OneNaijaMarket</title>
+
+  <!-- ✅ Firebase (CORRECT VERSION) -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
   <style>
     body { font-family: Arial; margin:0; background:#f5f5f5; }
     header { background:#008751; color:white; padding:18px; text-align:center; }
@@ -16,63 +20,92 @@
     .whatsapp-btn { background:#25D366; margin-top:10px; }
   </style>
 </head>
-<body><header>
+
+<body>
+
+<header>
   <h1>OneNaijaMarket</h1>
   <p>Post anything. Sell anything. Offer any service.</p>
-</header><div class="container"><div class="form-box">
-  <h2>Post Listing</h2>
-  <input id="title" placeholder="Title">
-  <select id="category">
-    <option>Products</option>
-    <option>Services</option>
-    <option>Tutoring</option>
-  </select>
-  <textarea id="description" placeholder="Description"></textarea>
-  <input id="price" placeholder="Price">
-  <input id="contact" placeholder="WhatsApp number">
-  <button onclick="addListing()">Post</button>
-</div><div id="listings"></div></div><script>
-  // 🔥 PASTE YOUR FIREBASE CONFIG HERE
-  // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+</header>
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyB_M-mSkI9C_XQ8zqnL-UW9AnSSiJaI418",
-  authDomain: "onenaijamarket.firebaseapp.com",
-  projectId: "onenaijamarket",
-  storageBucket: "onenaijamarket.firebasestorage.app",
-  messagingSenderId: "505228436859",
-  appId: "1:505228436859:web:5795fb2b3c280b41c089de"
-};
+<div class="container">
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+  <div class="form-box">
+    <h2>Post Listing</h2>
+    <input id="title" placeholder="Title">
+    
+    <select id="category">
+      <option>Products</option>
+      <option>Services</option>
+      <option>Tutoring</option>
+    </select>
 
+    <textarea id="description" placeholder="Description"></textarea>
+    <input id="price" placeholder="Price">
+    <input id="contact" placeholder="WhatsApp number (e.g. 2348012345678)">
+    
+    <button onclick="addListing()">Post</button>
+  </div>
+
+  <div id="listings"></div>
+
+</div>
+
+<script>
+  // ✅ YOUR FIREBASE CONFIG (ALREADY CORRECT)
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_M-mSkI9C_XQ8zqnL-UW9AnSSiJaI418",
+    authDomain: "onenaijamarket.firebaseapp.com",
+    projectId: "onenaijamarket",
+    storageBucket: "onenaijamarket.firebasestorage.app",
+    messagingSenderId: "505228436859",
+    appId: "1:505228436859:web:5795fb2b3c280b41c089de"
+  };
+
+  // ✅ Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
+  // ✅ ADD LISTING
   function addListing() {
-    const title = document.getElementById('title').value;
+    const title = document.getElementById('title').value.trim();
     const category = document.getElementById('category').value;
-    const description = document.getElementById('description').value;
-    const price = document.getElementById('price').value;
-    const contact = document.getElementById('contact').value;
+    const description = document.getElementById('description').value.trim();
+    const price = document.getElementById('price').value.trim();
+    const contact = document.getElementById('contact').value.trim();
 
     if (!title || !description || !contact) {
-      alert('Fill all fields');
+      alert('Please fill all required fields');
       return;
     }
 
     db.collection('listings').add({
-      title, category, description, price, contact, createdAt: Date.now()
+      title,
+      category,
+      description,
+      price,
+      contact,
+      createdAt: Date.now()
+    })
+    .then(() => {
+      alert("Posted successfully ✅");
+
+      // clear form
+      document.getElementById('title').value = '';
+      document.getElementById('description').value = '';
+      document.getElementById('price').value = '';
+      document.getElementById('contact').value = '';
+    })
+    .catch((error) => {
+      alert("Error: " + error.message);
+      console.error(error);
     });
   }
 
+  // ✅ RENDER LISTINGS (REAL-TIME)
   function renderListings() {
-    db.collection('listings').orderBy('createdAt','desc')
+    db.collection('listings')
+      .orderBy('createdAt', 'desc')
       .onSnapshot(snapshot => {
         const container = document.getElementById('listings');
         container.innerHTML = '';
@@ -85,11 +118,11 @@ const app = initializeApp(firebaseConfig);
 
           div.innerHTML = `
             <h3>${item.title}</h3>
-            <p>${item.category}</p>
+            <p><b>${item.category}</b></p>
             <p>${item.description}</p>
-            <p><b>${item.price}</b></p>
+            <p><b>${item.price || ''}</b></p>
             <a href="https://wa.me/${item.contact}" target="_blank">
-              <button class="whatsapp-btn">Contact</button>
+              <button class="whatsapp-btn">Contact Seller</button>
             </a>
           `;
 
@@ -99,5 +132,7 @@ const app = initializeApp(firebaseConfig);
   }
 
   renderListings();
-</script></body>
-  </html>
+</script>
+
+</body>
+</html>
