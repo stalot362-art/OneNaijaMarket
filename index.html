@@ -33,11 +33,23 @@
   <button onclick="addListing()">Post</button>
 </div><div id="listings"></div></div><script>
   // 🔥 PASTE YOUR FIREBASE CONFIG HERE
-  const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-  };
+  // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyB_M-mSkI9C_XQ8zqnL-UW9AnSSiJaI418",
+  authDomain: "onenaijamarket.firebaseapp.com",
+  projectId: "onenaijamarket",
+  storageBucket: "onenaijamarket.firebasestorage.app",
+  messagingSenderId: "505228436859",
+  appId: "1:505228436859:web:5795fb2b3c280b41c089de"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
