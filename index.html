@@ -78,41 +78,43 @@
   const db = firebase.firestore();
 
   // ✅ ADD LISTING
-  function addListing() {
-    
-    const title = document.getElementById('wetin you want sell').value.trim();
-    const category = document.getElementById('category').value;
-    const description = document.getElementById('description').value.trim();
-    const price = document.getElementById('price or negotiable').value.trim();
-    const contact = document.getElementById('contact').value.trim();
+  
+      function addListing() {
+  const title = document.getElementById('title').value;
+  const category = document.getElementById('category').value;
+  const description = document.getElementById('description').value;
+  const price = document.getElementById('price').value;
+  const contact = document.getElementById('contact').value;
 
-    if (!title || !description || !contact) {
-      alert('Please fill all required fields');
-      return;
-    }
+  if (!title || !description || !contact) {
+    alert("Fill all required fields");
+    return;
+  }
 
-    db.collection('listings').add({
-      title,
-      category,
-      description,
-      price,
-      contact,
-      createdAt: Date.now()
-    })
-    .then(() => {
+  const listing = {
+    title: title,
+    category: category,
+    description: description,
+    price: price,
+    contact: contact,
+    createdAt: new Date()
+  };
+
+  db.collection("listings")
+    .add(listing)
+    .then(function() {
       alert("Posted successfully ✅");
 
-      // clear form
-      document.getElementById('title').value = '';
-      document.getElementById('description').value = '';
-      document.getElementById('price').value = '';
-      document.getElementById('contact').value = '';
+      document.getElementById('title').value = "";
+      document.getElementById('description').value = "";
+      document.getElementById('price').value = "";
+      document.getElementById('contact').value = "";
     })
-    .catch((error) => {
-      alert("Error: " + error.message);
-      console.error(error);
+    .catch(function(error) {
+      console.error("Error adding document: ", error);
+      alert("ERROR: " + error.message);
     });
-  }
+}
 
   // ✅ RENDER LISTINGS (REAL-TIME)
   function renderListings() {
