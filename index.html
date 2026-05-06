@@ -117,7 +117,7 @@
   // ✅ RENDER LISTINGS (REAL-TIME)
   function renderListings() {
     db.collection('listings')
-      .orderBy('createdAt', 'desc')
+    
       .onSnapshot(snapshot => {
         const container = document.getElementById('listings');
         container.innerHTML = '';
