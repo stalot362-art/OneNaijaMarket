@@ -52,7 +52,7 @@
 </select>
 
     <textarea id="description" placeholder="Description"></textarea>
-    <input id="price" placeholder="Price">
+    <input id="price" placeholder="Price (₦)">
     <input id="contact" placeholder="WhatsApp number (e.g. 2348012345678)">
     
     <button onclick="addListing()">Post</button>
@@ -132,7 +132,7 @@
             <h3>${item.title}</h3>
             <p><b>${item.category}</b></p>
             <p>${item.description}</p>
-            <p><b>${item.price || ''}</b></p>
+            <p><b>${item.price ? '₦' + Number(item.price).toLocaleString() : ''}</b></p>
             <a href="https://wa.me/${item.contact}" target="_blank">
               <button class="whatsapp-btn">Contact Seller</button>
             </a>
